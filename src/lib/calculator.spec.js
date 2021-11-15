@@ -14,5 +14,4 @@ it('should throw an error if what is provided to the methos cannot be summed', (
     sum('', 1)
   }).toThrowError();
 
-  
 });
