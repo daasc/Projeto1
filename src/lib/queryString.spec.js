@@ -10,4 +10,15 @@ describe('Object to query string', () => {
     expect(queryString(obj)).toBe('name=Paulo&profession=developer');
 
   });
+  it('should throw an erro when an object is passed as value', () => {
+    const obj = {
+      name: 'Paulo',
+      abilities: {
+        first: 'developer',
+      } 
+    };
+    expect(() => {
+      queryString(obj);
+    }).toThrowError()
+  });
 });
