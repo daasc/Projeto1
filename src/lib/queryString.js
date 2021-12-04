@@ -1,13 +1,13 @@
-const keyValueToString = ([key, value]) => {
+ const keyValueToString = ([key, value]) => {
   if (typeof value === 'object' && !Array.isArray(value)) {
     throw new Error('Please check');
   }
   return `${key}=${value}`;
 };
 
-const queryString = obj => Object.entries(obj).map(keyValueToString).join('&');
+export const queryString = obj => Object.entries(obj).map(keyValueToString).join('&');
 
-const parse = string =>
+export const parse = string =>
   Object.fromEntries(
     string.split('&').map(item => {
       let [key, value] = item.split('=');
@@ -19,7 +19,4 @@ const parse = string =>
     }),
   );
 
-module.exports = {
-  queryString,
-  parse,
-};
+
