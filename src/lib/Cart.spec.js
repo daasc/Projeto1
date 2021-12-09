@@ -4,7 +4,11 @@ describe('Carts', () => {
   let cart
   let product = {
     title: 'Adidas',
-    price: 35388 // 353.88
+    price: 35388 
+  }
+  let product2 = {
+    title: 'nike',
+    price: 41872 
   }
   beforeEach(() => {
     cart = new Cart();    
@@ -37,5 +41,20 @@ describe('Carts', () => {
 
     expect(cart.getTotal()).toEqual(35388)
     
+  });
+
+  it('should update total when a product gets inclued and then removed', () => {
+    cart.add({
+      product,
+      quantity: 2
+    })
+    cart.add({
+      product: product2,
+      quantity: 1
+    })
+
+    cart.remove(product);
+
+    expect(cart.getTotal()).toEqual(41872);
   });
 });
