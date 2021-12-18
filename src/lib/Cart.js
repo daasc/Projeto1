@@ -1,9 +1,23 @@
 import find from 'lodash/find';
 import remove from 'lodash/remove';
-import Dinero  from 'dinero.js';
+import Dinero from 'dinero.js';
 const Money = Dinero;
 Money.defaultCurrency = 'BRL';
 Money.defaultPrecision = 2;
+
+const calculatePercentageDiscount = (amount, item) => {
+  if (item.condition?.percentage && item.quantity > item.condition.minimum) {
+    return amount.percentage(item.condition.percentage);
+  }
+
+  return Money({ amount: 0 });
+};
+const calculateQuantityDiscount = (amount, item) => {
+  if (item.condition?.quantity && item.quantity > item.condition?.quantity) {
+    return amount.percentage(50);
+  }
+  return Money({ amount: 0 });
+};
 
 export default class Cart {
   items = [];
@@ -19,10 +33,16 @@ export default class Cart {
     remove(this.items, { product });
   }
   getTotal() {
-    return this.items.reduce(
-      (acc, item) => acc.add(Money({amount: item.quantity * item.product.price})) ,
-      Money({amount: 0}),
-    );
+    return this.items.reduce((acc, item) => {
+      const amount = Money({ amount: item.quantity * item.product.price });
+      let discount = Money({ amount: 0 });
+      if (item.condition?.percentage) {
+        discount = calculatePercentageDiscount(amount, item);
+      } else if (item.condition?.quantity) {
+        discount = calculateQuantityDiscount(amount, item);
+      }
+      return acc.add(amount).subtract(discount);
+    }, Money({ amount: 0 }));
   }
 
   sumary() {
@@ -31,17 +51,17 @@ export default class Cart {
 
     return {
       total,
-      items
-    }
+      items,
+    };
   }
   checkout() {
-    const {total, items} = this.sumary();
+    const { total, items } = this.sumary();
 
     this.items = [];
-    
+
     return {
       total,
-      items
-    }
+      items,
+    };
   }
 }
